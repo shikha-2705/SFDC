@@ -1,0 +1,87 @@
+<aura:component controller="DynamicListController" implements="flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:hasRecordId,force:lightningQuickAction,force:appHostable" access="global">
+    
+    <aura:attribute name="sessionId" type="String"/>
+    
+    <!--  HANDLERS -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <!-- DATATABLE ATTRIBUTES -->
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="rawData" type="List"/>
+    <aura:attribute name="rawDataForFilter" type="List"/>
+    <aura:attribute name="selectedRows" type="List"/> 
+    <aura:attribute name="hideCheckboxes" type="boolean"/>
+    <aura:attribute name="recordsPerPage" type="Integer" default="25"/>    
+    <aura:attribute name="data" type="List" /> 
+    <aura:attribute name="sObjType" type="String"/>
+    <aura:attribute name="selectListView" type="String"/>
+    <aura:attribute name="otList" type = "List"/>
+    <aura:attribute name="sListView" type = "List"/>
+    <aura:attribute name="listViewResult" type="string[]"/>
+    <aura:attribute name="objectInfo" type="string" default="Account"/>
+    <aura:attribute name="currentListViewName" type="string" />
+    <aura:attribute name="bShowListView" type="boolean" default="false"/>
+    
+    <!-- PAGE HEADER -->
+    <div class="slds-page-header slds-p-left_medium" style="background-color: #fafafa">
+        
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate slds-m-left_small">
+                <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate headerLarge"  title="All Cadence">Dynamic List View</h1>
+            </div>
+        </div>
+        
+        <div class="slds-grid slds-m-top_small">
+            <div class= "slds-col slds-size_1-of-8 slds-m-right_medium">
+                <lightning:select variant = "label-hidden"
+                                  name="select"
+                                  label="type" 
+                                  value="{!v.sObjType}"
+                                  onchange="{!c.filterObjectType}"
+                                  required="true"
+                                  messageWhenValueMissing="Please Select sObject.">                                              
+                    <option value="">Select a sObject</option>
+                    <aura:iteration var="ot" items="{!v.otList}">
+                        <option value="{!ot}">{! ot }</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            
+            <div class="slds-col slds-size_1-of-9 slds-m-left_medium slds-m-top_x-large slds-m-right_xx-small">Select a ListView :</div>
+            <div class="slds-col slds-size_1-of-8 slds-m-right_medium slds-m-top_xx-small">
+                <lightning:select variant = "label-hidden"
+                                  name="select"
+                                  onchange="{!c.onPicklistChange}"
+                                  label="listview">
+                    <aura:iteration items="{!v.listViewResult}" var="listView">
+                        <option value="{!listView.developerName}">{!listView.label}</option>
+                    </aura:iteration> 
+                </lightning:select> 
+            </div>
+        </div>
+        
+        <aura:if isTrue="{!v.bShowListView}">           
+            <lightning:listView objectApiName="{!v.objectInfo}"
+                                listName="{!v.currentListViewName}"
+                                showSearchBar="true"
+                                showActionBar="false"
+                                enableInlineEdit="true"
+                                showRowLevelActions="false"/>             
+        </aura:if> 
+        
+        <!-- RECORD TABLE -->
+        <!-- <div >
+            <div class="slds-m-top_medium rdna-classic-datatableStyling" style="height : 500px">
+                <lightning:datatable keyField="Id" 
+                                     data="{!v.data}"
+                                     columns = "{!v.columns}" 
+                                     rawData = "{!v.rawData}" 
+                                     aura:id = "datatable"
+                                     hideCheckboxColumn = "{!v.hideCheckboxes}" 
+                                     sortBy = "{!v.sortBy}"
+                                     rowsToLoad = "{!v.recordsPerPage}"  
+                                     rawDataForFilter = "{!v.rawDataForFilter}"
+                                     /> 
+            </div>
+        </div> -->
+    </div>
+</aura:component>
